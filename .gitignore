@@ -1,0 +1,39 @@
+# --- Go ---
+bin/
+*.exe
+*.test
+*.out
+coverage.*
+
+# --- Terraform ---
+# State holds secrets in plain text and belongs in a remote backend, never in git
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# --- Secrets and credentials ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+kubeconfig*
+*.kubeconfig
+
+# --- Personal files kept out of the repo ---
+# Screenshots: they show browser tabs from work
+*.jpg
+*.jpeg
+*.png
+private/
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/
