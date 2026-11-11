@@ -100,7 +100,7 @@ Cloud environments are ephemeral: created for a session and destroyed afterwards
 ## Roadmap
 
 - [x] Repository structure
-- [ ] `auth-service`: platform-ready HTTP server (probes, graceful shutdown, timeouts, structured logs)
+- [x] `auth-service`: platform-ready HTTP server (probes, graceful shutdown, timeouts, structured logs)
 - [ ] `auth-service`: OIDC flows with PostgreSQL and Redis; container image; local Kubernetes
 - [ ] On-prem VMs with HAProxy
 - [ ] Terraform: AWS network, EC2 (rehost), EKS
