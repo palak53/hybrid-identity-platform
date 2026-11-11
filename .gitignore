@@ -5,6 +5,17 @@ bin/
 *.out
 coverage.*
 
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+db.sqlite3
+
 # --- Terraform ---
 # State holds secrets in plain text and belongs in a remote backend, never in git
 .terraform/

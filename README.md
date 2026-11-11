@@ -61,18 +61,33 @@ The platform must:
 
 ## Components
 
-| Component | Language | Purpose |
-|---|---|---|
-| `services/auth-service` | Go | Minimal OIDC provider: authorization code + PKCE, client credentials, JWKS, step-up MFA |
-| `services/signals-service` | Go | Consumes login events from Kafka, scores risk (credential stuffing, brute force, impossible travel), streams to SIEM. Scales with KEDA on consumer lag |
-| `services/lifecycle-service` | Go | SCIM 2.0 joiner/mover/leaver provisioning on Knative, with retries, idempotency, circuit breakers, dead-letter queue |
-| `platform/layer0-operator` | Go | Kubernetes operator: one `PlatformService` manifest generates workloads, autoscaling, PDBs, network policy, SLO alerts, and canary config; provisions cloud dependencies; enforces guardrails |
-| `platform/opsbot` | Go / Python | Read-only incident assistant using MCP tools, with human approval and audit logging |
-| `infra/` | Terraform | AWS, Azure, and on-prem infrastructure as code, per environment |
+Application services are written in **Python (Django)**. Platform and infrastructure tooling is written
+in **Go**. The platform is language-neutral: any team's service gets the same deployment, scaling,
+security, and SLO tooling.
+
+### Application services (Django)
+
+| Component | Purpose |
+|---|---|
+| `services/auth-service` | Minimal OIDC provider: client credentials, authorization code + PKCE, JWKS, step-up MFA |
+| `services/signals-service` | Consumes login events from Kafka, scores risk (credential stuffing, brute force, impossible travel), streams to SIEM. Scales with KEDA on consumer lag |
+| `services/lifecycle-service` | SCIM 2.0 joiner/mover/leaver provisioning on Knative, with retries, idempotency, circuit breakers, dead-letter queue |
+
+### Platform and infrastructure tooling (Go)
+
+| Component | Purpose |
+|---|---|
+| `platform/layer0-operator` | Kubernetes operator and admission webhook: one `PlatformService` manifest generates workloads, autoscaling, PDBs, network policy, SLO alerts, and canary config; provisions cloud dependencies; enforces guardrails |
+| `platform/l0` | Developer CLI: scaffold, deploy, check status and SLOs, across EKS, AKS, EC2, and on-prem |
+| `platform/login-prober` | Synthetic login checks against every runtime; the outside-in SLI source |
+| `platform/vm-agent` | Single binary for on-prem VMs and EC2: local health checks, connection draining, metrics |
+| `platform/gameday` | Chaos tool with guardrails and automatic rollback |
+| `platform/opsbot-tools` | Read-only MCP tool server (Kubernetes, Prometheus, deploy history) for the `opsbot` incident assistant |
+| `infra/` | Terraform for AWS, Azure, and on-prem, tested with Terratest (Go) |
 
 ## Tech stack
 
-**Languages:** Go, Python
+**Languages:** Python (Django) for services, Go for platform tooling
 **Compute:** Amazon EKS, Azure AKS, Amazon EC2, on-prem VMs
 **Infrastructure as code:** Terraform
 **Delivery:** GitHub Actions, Helm, Argo CD, Argo Rollouts
@@ -81,7 +96,7 @@ The platform must:
 **Networking:** Gateway API, Linkerd, Route 53
 **Observability:** Prometheus, Grafana, OpenTelemetry, Datadog
 **Security:** Kyverno, cosign, External Secrets, AWS Secrets Manager, Azure Key Vault
-**Testing:** Go tests, k6 load testing
+**Testing:** Django tests, Go tests, Terratest, k6 load testing
 **Cost:** OpenCost
 
 ## Environments
@@ -118,8 +133,8 @@ Cloud environments are ephemeral: created for a session and destroyed afterwards
 ## Repository layout
 
 ```
-services/   application services (Go)
-platform/   platform runtime: operator, charts, opsbot
+services/   application services (Django)
+platform/   platform tooling (Go): operator, CLI, prober, VM agent, chaos, opsbot tools
 infra/      Terraform for AWS, Azure, on-prem
 docs/adr/   architecture decision records
 ```

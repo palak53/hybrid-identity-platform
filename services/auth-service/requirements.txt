@@ -1,0 +1,6 @@
+# Pinned exact versions so every environment (laptop, CI, EKS, AKS, EC2,
+# on-prem VMs) runs identical code. Upgrade deliberately, via a PR.
+Django==5.2.19      # LTS: security fixes until April 2028
+gunicorn==23.0.0    # production WSGI server
+asgiref==3.13.0     # Django dependency
+sqlparse==0.6.1     # Django dependency
