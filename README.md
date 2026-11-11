@@ -108,7 +108,22 @@ security, and SLO tooling.
 | On-prem | 1 VM | 2 VMs behind HAProxy |
 | Deploys | Auto-sync from `main` | Promotion by PR, canary gated on SLOs and error budget |
 
-Cloud environments are ephemeral: created for a session and destroyed afterwards.
+### Zero-cost setup
+
+The whole project runs for **$0** on a laptop with 8 GB of RAM:
+
+| Target | Local stand-in |
+|---|---|
+| EKS / AKS | Two k3d clusters (`cloud-aws`, `cloud-azure`) |
+| EC2 and on-prem VMs | Lightweight Linux VMs with systemd, behind HAProxy |
+| RDS, ElastiCache, MSK | PostgreSQL, Redis, Redpanda containers |
+| Route 53 failover | Health-checked edge proxy across both clusters |
+| Datadog | Prometheus, Grafana, Loki, Tempo |
+| AWS APIs | LocalStack |
+
+Terraform modules target the real AWS and Azure services and are checked with `validate`, `tflint`,
+`checkov`, and `plan`. Real-cloud runs are optional and use only free-credit accounts that cannot be
+charged. Staging and production are separate namespaces and Argo CD applications in each cluster.
 
 ---
 
